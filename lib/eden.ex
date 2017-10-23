@@ -54,21 +54,22 @@ defmodule Eden do
 
     # Register ourselves
     hostname_ip = Platform.hostname_with_ip()
-    Violet.set dir_name, hostname_ip[:ip], hostname_ip[:hostname]
+    Violet.set dir_name, hostname_ip[:hostaddr], hostname_ip[:hostname]
 
     # Start connecting
     unless Violet.is_error? registry do
       for node_info <- registry do
+        Logger.info "Node: #{inspect node_info}"
         node_ip = node_info["key"]
         node_hostname = node_info["value"]
         # Don't try to connect to ourselves
-        unless node_ip == hostname_ip[:ip] 
+        unless node_ip == hostname_ip[:hostaddr] 
             or node_hostname == hostname_ip[:hostname] do
           case Node.connect :"#{name}@#{node_ip}" do
-            true -> Logger.info "Connected to #{name}@#{node_ip}"
+            true -> Logger.info "Connected to #{inspect name}@#{inspect node_ip}"
             # TODO: Dead node tracking
-            false -> Logger.warn "Couldn't connect to #{name}@#{node_ip}"
-            :ignored -> Logger.warn "Local node is not alive!?"
+            false -> Logger.warn "Couldn't connect to #{inspect name}@#{inspect node_ip}"
+            :ignored -> Logger.warn "Local node is not alive for node #{inspect name}@#{inspect node_ip}!?"
           end
         end
       end
