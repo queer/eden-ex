@@ -32,10 +32,10 @@ defmodule Eden do
     Process.flag :trap_exit, true
 
     # Expect just a name as input
-    name = hd opts
-    send self, :connect
+    name = opts
+    send self(), :connect
 
-    {:ok, to_char_list(name)}
+    {:ok, to_charlist(name)}
   end
 
   def handle_info(:connect, name) do
@@ -66,6 +66,7 @@ defmodule Eden do
             or node_hostname == hostname_ip[:hostname] do
           case Node.connect :"#{name}@#{node_ip}" do
             true -> Logger.info "Connected to #{name}@#{node_ip}"
+            # TODO: Dead node tracking
             false -> Logger.warn "Couldn't connect to #{name}@#{node_ip}"
             :ignored -> Logger.warn "Local node is not alive!?"
           end
@@ -76,12 +77,12 @@ defmodule Eden do
     end
 
     # Handle reconnects etc.
-    Process.send_after self, :connect, @connect_interval
+    Process.send_after self(), :connect, @connect_interval
 
     {:noreply, name}
   end
 
-  def terminate(reason, state) do
+  def terminate(_reason, _state) do
     # Clean ourselves from the etcd registry
     Logger.info "Eden GenServer terminating, cleaning self from registry..."
   end
