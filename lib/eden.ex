@@ -47,9 +47,10 @@ defmodule Eden do
 
     # Ensure the registry even exists
     registry = Violet.list_dir dir_name
-    if Violet.is_error? registry do
+    if is_nil registry do
       Logger.warn "Etcd registry doesn't exist, doing initial setup..."
       Violet.make_dir dir_name
+    else
     end
 
     # Register ourselves
@@ -57,7 +58,7 @@ defmodule Eden do
     Violet.set dir_name, hostname_ip[:hostaddr], hostname_ip[:hostname]
 
     # Start connecting
-    unless Violet.is_error? registry do
+    unless is_nil registry do
       for node_info <- registry do
         Logger.info "Node: #{inspect node_info}"
         node_ip = node_info["key"]
