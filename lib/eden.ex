@@ -62,11 +62,11 @@ defmodule Eden do
         node_ip = node_info["key"]
         node_hostname = node_info["value"]
         # Don't try to connect to ourselves
-        unless node_name == hostname_ip[:ip] 
+        unless node_ip == hostname_ip[:ip] 
             or node_hostname == hostname_ip[:hostname] do
-          case Node.connect :"#{name}@#{node_name}" do
-            true -> Logger.info "Connected to #{name}@#{node_name}"
-            false -> Logger.warn "Couldn't connect to #{name}@#{node_name}"
+          case Node.connect :"#{name}@#{node_ip}" do
+            true -> Logger.info "Connected to #{name}@#{node_ip}"
+            false -> Logger.warn "Couldn't connect to #{name}@#{node_ip}"
             :ignored -> Logger.warn "Local node is not alive!?"
           end
         end
