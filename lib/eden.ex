@@ -39,7 +39,7 @@ defmodule Eden do
   end
 
   def handle_info(:connect, name) do
-    dir_name = "eden_registry_" <> name
+    dir_name = "eden_registry_" <> to_string(name)
 
     # Note: This does re-set the key each time the :connect call is handled.
     # The justification for this is that, if the etcd cluster loses the info
