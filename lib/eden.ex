@@ -11,6 +11,12 @@ defmodule Eden do
         # ...
         worker(Eden, ["service_name"])
       ]
+
+  Use Distillery to set up vm.args:
+
+      -name name@ip
+      -setcookie ${COOKIE} # get from env
+      -smp auto
   """
 
   use GenServer
@@ -30,6 +36,10 @@ defmodule Eden do
   def init(opts) do
     # Trap exits so we can respond
     Process.flag :trap_exit, true
+
+    unless is_nil System.get_env("COOKIE") do
+      Node.set_cookie(Node.self(), System.get_env("COOKIE"))
+    end
 
     # Expect just a name as input
     name = opts
@@ -58,6 +68,7 @@ defmodule Eden do
     Violet.set dir_name, hostname_ip[:hostaddr], hostname_ip[:hostname]
 
     # Start connecting
+    Logger.info "registry: #{inspect registry}"
     unless is_nil registry do
       for node_info <- registry do
         Logger.info "Node: #{inspect node_info}"
