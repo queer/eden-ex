@@ -88,10 +88,10 @@ defmodule Eden do
         Logger.info "Connecting to #{inspect state[:name]}@#{inspect node_ip} identified by #{inspect node_hash}"
         # Don't worry about connecting to ourselves because it's handled for us
         case Node.connect :"#{state[:name]}@#{node_ip}" do
-          true -> Logger.info "Connected to #{inspect state[:name]}@#{inspect node_ip}"
+          true -> Logger.info "Connected to #{inspect state[:name]}@#{node_ip}"
           # TODO: Dead node tracking
-          false -> Logger.warn "Couldn't connect to #{inspect state[:name]}@#{inspect node_ip}"
-          :ignored -> Logger.warn "Local node is not alive for node #{inspect state[:name]}@#{inspect node_ip}!?"
+          false -> Logger.warn "Couldn't connect to #{inspect state[:name]}@#{node_ip}"
+          :ignored -> Logger.warn "Local node is not alive for node #{inspect state[:name]}@#{node_ip}!?"
         end
       end
 
