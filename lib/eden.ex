@@ -55,6 +55,7 @@ defmodule Eden do
       Logger.info "#{inspect split}"
       # split[0] is longname, split[1] is ip
       Node.start("#{state[:name]}@#{List.first(split)}")
+      Node.set_cookie System.get_env "COOKIE"
     else
       raise "No node longname provided!?"
     end
