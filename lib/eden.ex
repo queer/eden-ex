@@ -45,7 +45,7 @@ defmodule Eden do
       }
     else
       %{
-        name: "#{name}-#{hash}",
+        name: "#{name}_#{hash}",
         hash: hash,
         registry_dir: "eden_registry_" <> to_string(name)
       }
@@ -95,7 +95,6 @@ defmodule Eden do
         node_ip = node_info["value"]
         node_atom = :"#{state[:name]}@#{node_ip}"
         Logger.info "Connecting to #{inspect node_atom} identified by #{inspect node_hash}"
-        Logger.info "Node atom: #{inspect node_atom}"
         # Don't worry about connecting to ourselves because it's handled for us
         case Node.connect node_atom do
           true -> Logger.info "Connected to #{inspect node_atom}"
