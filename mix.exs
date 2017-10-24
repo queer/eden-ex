@@ -21,7 +21,8 @@ defmodule Eden.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:violet, github: "queer/violet"}
+      {:violet, github: "queer/violet"},
+      {:signal_handler, github: "tsutsu/signal_handler"}
     ]
   end
 end

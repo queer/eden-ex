@@ -9,7 +9,7 @@ defmodule Eden do
 
       children = [
         # ...
-        worker(Eden, ["service_name"])
+        worker(Eden, ["service_name"], shutdown: 123_456)
       ]
 
   Use Distillery to set up vm.args:
@@ -51,15 +51,18 @@ defmodule Eden do
                               |> String.downcase
     state = %{
       name: name,
-      hash: hash
+      hash: hash,
+      registry_dir: "eden_registry_" <> to_string(state[:name])
     }
+    # Handle POSIX signals
+    System.SignalHandler.register :term, fn -> Eden.terminate(":term trap", state) end
     send self(), :connect
 
     {:ok, state}
   end
 
   def handle_info(:connect, state) do
-    dir_name = "eden_registry_" <> to_string(state[:name])
+    dir_name = state[:registry_dir]
 
     # Note: This does re-set the key each time the :connect call is handled.
     # The justification for this is that, if the etcd cluster loses the info
@@ -106,9 +109,10 @@ defmodule Eden do
     {:noreply, state}
   end
 
-  def terminate(_reason, _state) do
+  def terminate(reason, state) do
     # Clean ourselves from the etcd registry
     Logger.info "Eden GenServer terminating, cleaning self from registry..."
-    # TODO
+    Logger.info "Termination reason: #{inspect reason}"
+    Violet.delete state[:registry_dir], state[:hash]
   end
 end
