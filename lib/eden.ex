@@ -40,7 +40,7 @@ defmodule Eden do
     unless is_nil System.get_env("NODE_LONGNAME") do
       state = %{
         name: System.get_env("NODE_LONGNAME") |> String.split("@") |> List.first,
-        hash: System.get_env("NODE_LONGNAME") |> String.split("@") |> List.first |> String.split "-" |> List.last,
+        hash: System.get_env("NODE_LONGNAME") |> String.split("@") |> List.first |> String.split("-") |> List.last,
         registry_dir: "eden_registry_" <> to_string(name)
       }
     else
