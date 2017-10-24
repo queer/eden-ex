@@ -45,13 +45,18 @@ defmodule Eden do
 
     # Expect just a name as input
     name = opts
+    hash = :crypto.hash(:md5, :os.system_time(:milliseconds) |> Integer.to_string)
+    state = %{
+      name: name,
+      hash: hash
+    }
     send self(), :connect
 
-    {:ok, to_charlist(name)}
+    {:ok, state}
   end
 
-  def handle_info(:connect, name) do
-    dir_name = "eden_registry_" <> to_string(name)
+  def handle_info(:connect, state) do
+    dir_name = "eden_registry_" <> to_string(state[:name])
 
     # Note: This does re-set the key each time the :connect call is handled.
     # The justification for this is that, if the etcd cluster loses the info
@@ -66,25 +71,24 @@ defmodule Eden do
     end
 
     # Register ourselves
+    # We don't need to care about the hostname, so we just map the hash to the
+    # hostaddr
     hostname_ip = Platform.hostname_with_ip()
-    Violet.set dir_name, hostname_ip[:hostaddr], hostname_ip[:hostname]
+    Violet.set dir_name, state[:hash], hostname_ip[:hostaddr]
 
     # Start connecting
-    Logger.info "registry: #{inspect registry}"
     unless is_nil registry do
       for node_info <- registry do
-        Logger.info "Node: #{inspect node_info}"
-        node_ip = node_info["key"] |> String.split("/") |> List.last
-        node_hostname = node_info["value"]
-        # Don't try to connect to ourselves
-        unless node_ip == hostname_ip[:hostaddr] 
-            or node_hostname == hostname_ip[:hostname] do
-          case Node.connect :"#{name}@#{node_ip}" do
-            true -> Logger.info "Connected to #{inspect name}@#{inspect node_ip}"
-            # TODO: Dead node tracking
-            false -> Logger.warn "Couldn't connect to #{inspect name}@#{inspect node_ip}"
-            :ignored -> Logger.warn "Local node is not alive for node #{inspect name}@#{inspect node_ip}!?"
-          end
+        # Logger.info "Node: #{inspect node_info}"
+        node_hash = node_info["key"] |> String.split("/") |> List.last
+        node_ip = node_info["value"]
+        Logger.info "Connecting to #{inspect state[:name]}@#{inspect node_ip} identified by #{inspect node_hash}"
+        # Don't worry about connecting to ourselves because it's handled for us
+        case Node.connect :"#{state[:name]}@#{node_ip}" do
+          true -> Logger.info "Connected to #{inspect state[:name]}@#{inspect node_ip}"
+          # TODO: Dead node tracking
+          false -> Logger.warn "Couldn't connect to #{inspect state[:name]}@#{inspect node_ip}"
+          :ignored -> Logger.warn "Local node is not alive for node #{inspect state[:name]}@#{inspect node_ip}!?"
         end
       end
 
@@ -94,7 +98,7 @@ defmodule Eden do
     # Handle reconnects etc.
     Process.send_after self(), :connect, @connect_interval
 
-    {:noreply, name}
+    {:noreply, state}
   end
 
   def terminate(_reason, _state) do
