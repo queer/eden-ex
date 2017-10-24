@@ -44,7 +44,7 @@ defmodule Eden do
     end
 
     unless is_nil System.get_env("COOKIE") do
-      Node.set_cookie(Node.self(), System.get_env("COOKIE"))
+      Node.set_cookie(System.get_env("COOKIE"))
     end
 
     # Expect just a name as input
