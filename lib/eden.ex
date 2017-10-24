@@ -45,7 +45,7 @@ defmodule Eden do
 
     # Expect just a name as input
     name = opts
-    hash = :crypto.hash(:md5, :os.system_time(:milliseconds) |> Integer.to_string)
+    hash = :crypto.hash(:md5, :os.system_time(:millisecond) |> Integer.to_string)
     state = %{
       name: name,
       hash: hash
