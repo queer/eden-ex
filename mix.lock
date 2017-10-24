@@ -2,4 +2,4 @@
   "ibrowse": {:hex, :ibrowse, "4.4.0", "2d923325efe0d2cb09b9c6a047b2835a5eda69d8a47ed6ff8bc03628b764e991", [], [], "hexpm"},
   "poison": {:hex, :poison, "3.1.0", "d9eb636610e096f86f25d9a46f35a9facac35609a7591b3be3326e99a0484665", [], [], "hexpm"},
   "signal_handler": {:git, "https://github.com/tsutsu/signal_handler.git", "eda6ceffda21651494ec96fb32ee8f6e46f23cf7", []},
-  "violet": {:git, "https://github.com/queer/violet.git", "60fb170c189054c9ed4b24634ecf1c860c1f6a38", []}}
+  "violet": {:git, "https://github.com/queer/violet.git", "0df8b1c77e1efb0eb0b277fdd3d0034f4c72a1d1", []}}

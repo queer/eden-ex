@@ -52,7 +52,7 @@ defmodule Eden do
     state = %{
       name: name,
       hash: hash,
-      registry_dir: "eden_registry_" <> to_string(state[:name])
+      registry_dir: "eden_registry_" <> to_string(name)
     }
     # Handle POSIX signals
     System.SignalHandler.register :term, &:init.stop/0
