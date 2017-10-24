@@ -51,9 +51,10 @@ defmodule Eden do
 
     unless is_nil System.get_env("NODE_LONGNAME") do
       split = System.get_env("NODE_LONGNAME")
-              |> String.split("@")
+              |> String.split("@", [parts: 2, trim: true])
+      Logger.info "#{inspect split}"
       # split[0] is longname, split[1] is ip
-      Node.start("#{state[:name]}@#{split[1]}")
+      Node.start("#{state[:name]}@#{List.first(split)}")
     else
       raise "No node longname provided!?"
     end
