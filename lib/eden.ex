@@ -47,10 +47,10 @@ defmodule Eden do
     hostname_ip = Platform.hostname_with_ip()
     unless Node.alive? do
       {:ok, _} = Node.start(:"#{state[:name]}@#{hostname_ip[:hostaddr]}", :longnames)
+      Node.set_cookie(System.get_env("COOKIE") |> String.to_atom)
     else
-      Logger.error "Node already alive!?"
+      Logger.warn "Node already alive (distillery?), not initializing..."
     end
-    Node.set_cookie(System.get_env("COOKIE") |> String.to_atom)
 
     # Start it up!
     send self(), :connect
