@@ -39,12 +39,11 @@ defmodule Eden do
 
     unless is_nil System.get_env("NODE_LONGNAME") do
       Node.start(System.get_env("NODE_LONGNAME"))
+      unless is_nil System.get_env("COOKIE") do
+        Node.set_cookie(System.get_env("COOKIE"))
+      end
     else
       raise "No node longname provided!?"
-    end
-
-    unless is_nil System.get_env("COOKIE") do
-      Node.set_cookie(System.get_env("COOKIE"))
     end
 
     # Expect just a name as input
