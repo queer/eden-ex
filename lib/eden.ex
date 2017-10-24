@@ -84,15 +84,20 @@ defmodule Eden do
       for node_info <- registry do
         # Logger.info "Node: #{inspect node_info}"
         node_hash = node_info["key"] |> String.split("/") |> List.last
+        # IP parts list
+        parts = node_info["value"] 
+                       |> String.split(".") 
+                       |> Enum.map(fn(x) -> String.to_integer(x) end)
         node_ip = node_info["value"]
-        Logger.info "Connecting to #{inspect state[:name]}@#{inspect node_ip} identified by #{inspect node_hash}"
-        Logger.info "Node atom: #{inspect :"#{state[:name]}@#{node_ip}"}"
+        node_atom = :"#{state[:name]}@#{parts[0]}.#{parts[1]}.#{parts[2]}.#{parts[3]}"
+        Logger.info "Connecting to #{inspect state[:name]}@#{inspect node_atom} identified by #{inspect node_hash}"
+        Logger.info "Node atom: #{inspect node_atom}"
         # Don't worry about connecting to ourselves because it's handled for us
-        case Node.connect :"#{state[:name]}@#{node_ip}" do
-          true -> Logger.info "Connected to #{inspect state[:name]}@#{node_ip}"
+        case Node.connect node_atom do
+          true -> Logger.info "Connected to #{inspect state[:name]}@#{inspect node_atom}"
           # TODO: Dead node tracking
-          false -> Logger.warn "Couldn't connect to #{inspect state[:name]}@#{node_ip}"
-          :ignored -> Logger.warn "Local node is not alive for node #{inspect state[:name]}@#{node_ip}!?"
+          false -> Logger.warn "Couldn't connect to #{inspect state[:name]}@#{inspect node_atom}"
+          :ignored -> Logger.warn "Local node is not alive for node #{inspect state[:name]}@#{inspect node_atom}!?"
         end
       end
 
