@@ -84,13 +84,8 @@ defmodule Eden do
       for node_info <- registry do
         # Logger.info "Node: #{inspect node_info}"
         node_hash = node_info["key"] |> String.split("/") |> List.last
-        # IP parts list
-        parts = node_info["value"] 
-                       |> String.split(".") 
-                       |> String.replace("\"", "")
-                       |> Enum.map(fn(x) -> String.to_integer(x) end)
         node_ip = node_info["value"]
-        node_atom = :"#{state[:name]}@#{parts[0]}.#{parts[1]}.#{parts[2]}.#{parts[3]}"
+        node_atom = :"#{state[:name]}@#{node_ip}"
         Logger.info "Connecting to #{inspect state[:name]}@#{inspect node_atom} identified by #{inspect node_hash}"
         Logger.info "Node atom: #{inspect node_atom}"
         # Don't worry about connecting to ourselves because it's handled for us
