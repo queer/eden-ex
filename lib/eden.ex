@@ -37,6 +37,12 @@ defmodule Eden do
     # Trap exits so we can respond
     Process.flag :trap_exit, true
 
+    unless is_nil System.get_env("NODE_LONGNAME") do
+      Node.start(System.get_env("NODE_LONGNAME"))
+    else
+      raise "No node longname provided!?"
+    end
+
     unless is_nil System.get_env("COOKIE") do
       Node.set_cookie(Node.self(), System.get_env("COOKIE"))
     end
