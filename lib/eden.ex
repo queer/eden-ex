@@ -55,7 +55,7 @@ defmodule Eden do
       registry_dir: "eden_registry_" <> to_string(state[:name])
     }
     # Handle POSIX signals
-    System.SignalHandler.register :term, fn -> Eden.terminate(":term trap", state) end
+    System.SignalHandler.register :term, &:init.stop/0
     send self(), :connect
 
     {:ok, state}
