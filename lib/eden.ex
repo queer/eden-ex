@@ -37,14 +37,11 @@ defmodule Eden do
     # Trap exits so we can respond
     Process.flag :trap_exit, true
 
-    #unless is_nil System.get_env("NODE_LONGNAME") do
-    #  Node.start(System.get_env("NODE_LONGNAME"))
-    #  unless is_nil System.get_env("COOKIE") do
-    #    Node.set_cookie(System.get_env("COOKIE"))
-    #  end
-    #else
-    #  raise "No node longname provided!?"
-    #end
+    unless is_nil System.get_env("NODE_LONGNAME") do
+      Node.start(System.get_env("NODE_LONGNAME"))
+    else
+      raise "No node longname provided!?"
+    end
 
     # Expect just a name as input
     name = opts
@@ -77,7 +74,7 @@ defmodule Eden do
     unless is_nil registry do
       for node_info <- registry do
         Logger.info "Node: #{inspect node_info}"
-        node_ip = node_info["key"]
+        node_ip = node_info["key"] |> String.split "/" | List.last
         node_hostname = node_info["value"]
         # Don't try to connect to ourselves
         unless node_ip == hostname_ip[:hostaddr] 
