@@ -37,14 +37,14 @@ defmodule Eden do
                               |> Integer.to_string) 
                               |> Base.encode16 
                               |> String.downcase
-    unless is_nil System.get_env("NODE_LONGNAME") do
-      state = %{
+    state = unless is_nil System.get_env("NODE_LONGNAME") do
+      %{
         name: System.get_env("NODE_LONGNAME") |> String.split("@") |> List.first,
         hash: System.get_env("NODE_LONGNAME") |> String.split("@") |> List.first |> String.split("-") |> List.last,
         registry_dir: "eden_registry_" <> to_string(name)
       }
     else
-      state = %{
+      %{
         name: "#{name}-#{hash}",
         hash: hash,
         registry_dir: "eden_registry_" <> to_string(name)
