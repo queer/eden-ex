@@ -86,6 +86,7 @@ defmodule Eden do
         node_hash = node_info["key"] |> String.split("/") |> List.last
         node_ip = node_info["value"]
         Logger.info "Connecting to #{inspect state[:name]}@#{inspect node_ip} identified by #{inspect node_hash}"
+        Logger.info "Node atom: #{inspect :"#{state[:name]}@#{node_ip}"}"
         # Don't worry about connecting to ourselves because it's handled for us
         case Node.connect :"#{state[:name]}@#{node_ip}" do
           true -> Logger.info "Connected to #{inspect state[:name]}@#{node_ip}"
@@ -107,5 +108,6 @@ defmodule Eden do
   def terminate(_reason, _state) do
     # Clean ourselves from the etcd registry
     Logger.info "Eden GenServer terminating, cleaning self from registry..."
+    # TODO
   end
 end
