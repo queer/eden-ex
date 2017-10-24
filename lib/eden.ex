@@ -14,7 +14,7 @@ defmodule Eden do
 
   Use Distillery to set up vm.args:
 
-      -name name@ip
+      -name ${NODE_LONGNAME}
       -setcookie ${COOKIE} # get from env
       -smp auto
   """
@@ -37,14 +37,14 @@ defmodule Eden do
     # Trap exits so we can respond
     Process.flag :trap_exit, true
 
-    unless is_nil System.get_env("NODE_LONGNAME") do
-      Node.start(System.get_env("NODE_LONGNAME"))
-      unless is_nil System.get_env("COOKIE") do
-        Node.set_cookie(System.get_env("COOKIE"))
-      end
-    else
-      raise "No node longname provided!?"
-    end
+    #unless is_nil System.get_env("NODE_LONGNAME") do
+    #  Node.start(System.get_env("NODE_LONGNAME"))
+    #  unless is_nil System.get_env("COOKIE") do
+    #    Node.set_cookie(System.get_env("COOKIE"))
+    #  end
+    #else
+    #  raise "No node longname provided!?"
+    #end
 
     # Expect just a name as input
     name = opts
