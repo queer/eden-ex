@@ -95,8 +95,8 @@ defmodule Eden do
         # Logger.info "Node: #{inspect node_info}"
         node_hash = node_info["key"] |> String.split("/") |> List.last
         node_ip = node_info["value"]
-
-        node_atom = :"#{state[:shortname]}@#{node_ip}"
+        node_fullname = "#{state[:shortname]}-#{node_hash}"
+        node_atom = :"#{node_fullname}@#{node_ip}"
         Logger.info "Connecting to #{inspect node_atom} identified by #{inspect node_hash}"
         # Don't worry about connecting to ourselves because it's handled for us
         case Node.connect node_atom do
