@@ -87,6 +87,7 @@ defmodule Eden do
         # IP parts list
         parts = node_info["value"] 
                        |> String.split(".") 
+                       |> String.replace("\"", "")
                        |> Enum.map(fn(x) -> String.to_integer(x) end)
         node_ip = node_info["value"]
         node_atom = :"#{state[:name]}@#{parts[0]}.#{parts[1]}.#{parts[2]}.#{parts[3]}"
