@@ -39,13 +39,15 @@ defmodule Eden do
                               |> String.downcase
     state = unless is_nil System.get_env("NODE_LONGNAME") do
       %{
+        shortname: name,
         name: System.get_env("NODE_LONGNAME") |> String.split("@") |> List.first,
         hash: System.get_env("NODE_LONGNAME") |> String.split("@") |> List.first |> String.split("-") |> List.last,
         registry_dir: "eden_registry_" <> to_string(name)
       }
     else
       %{
-        name: "#{name}_#{hash}",
+        shortname: name
+        name: "#{name}-#{hash}",
         hash: hash,
         registry_dir: "eden_registry_" <> to_string(name)
       }
@@ -93,7 +95,8 @@ defmodule Eden do
         # Logger.info "Node: #{inspect node_info}"
         node_hash = node_info["key"] |> String.split("/") |> List.last
         node_ip = node_info["value"]
-        node_atom = :"#{state[:name]}@#{node_ip}"
+
+        node_atom = :"#{state[:shortname]}@#{node_ip}"
         Logger.info "Connecting to #{inspect node_atom} identified by #{inspect node_hash}"
         # Don't worry about connecting to ourselves because it's handled for us
         case Node.connect node_atom do
