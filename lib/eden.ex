@@ -46,7 +46,7 @@ defmodule Eden do
       }
     else
       %{
-        shortname: name
+        shortname: name,
         name: "#{name}-#{hash}",
         hash: hash,
         registry_dir: "eden_registry_" <> to_string(name)
