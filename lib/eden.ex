@@ -11,12 +11,6 @@ defmodule Eden do
         # ...
         worker(Eden, ["service_name"], shutdown: 123_456)
       ]
-
-  Use Distillery to set up vm.args:
-
-      -name ${NODE_LONGNAME}
-      -setcookie ${COOKIE} # get from env
-      -smp auto
   """
 
   use GenServer
@@ -49,16 +43,14 @@ defmodule Eden do
       registry_dir: "eden_registry_" <> to_string(name)
     }
 
-    unless is_nil System.get_env("NODE_LONGNAME") do
-      split = System.get_env("NODE_LONGNAME")
-              |> String.split("@", [parts: 2, trim: true])
-      Logger.info "#{inspect split}"
-      # split[0] is longname, split[1] is ip
-      Node.start("#{state[:name]}@#{List.first(split)}")
-      Node.set_cookie System.get_env "COOKIE"
+    
+    hostname_ip = Platform.hostname_with_ip()
+    unless Node.alive? do
+      {:ok, _} = Node.start(:"#{state[:name]}@#{hostname_ip[:hostaddr]}", :longnames)
     else
-      raise "No node longname provided!?"
+      Logger.error "Node already alive!?"
     end
+    Node.set_cookie(System.get_env("COOKIE") |> String.to_atom)
 
     # Start it up!
     send self(), :connect
