@@ -37,12 +37,6 @@ defmodule Eden do
     # Trap exits so we can respond
     Process.flag :trap_exit, true
 
-    unless is_nil System.get_env("NODE_LONGNAME") do
-      Node.start(System.get_env("NODE_LONGNAME"))
-    else
-      raise "No node longname provided!?"
-    end
-
     # Expect just a name as input
     name = opts
     hash = :crypto.hash(:md5, :os.system_time(:millisecond) 
@@ -50,11 +44,21 @@ defmodule Eden do
                               |> Base.encode16 
                               |> String.downcase
     state = %{
-      name: name,
+      name: "#{name}-#{hash}",
       hash: hash,
       registry_dir: "eden_registry_" <> to_string(name)
     }
-    # Handle POSIX signals
+
+    unless is_nil System.get_env("NODE_LONGNAME") do
+      split = System.get_env("NODE_LONGNAME")
+              |> String.split("@")
+      # split[0] is longname, split[1] is ip
+      Node.start("#{state[:name]}@#{split[1]}")
+    else
+      raise "No node longname provided!?"
+    end
+
+    # Start it up!
     send self(), :connect
 
     {:ok, state}
