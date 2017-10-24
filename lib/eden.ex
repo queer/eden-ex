@@ -74,7 +74,7 @@ defmodule Eden do
     unless is_nil registry do
       for node_info <- registry do
         Logger.info "Node: #{inspect node_info}"
-        node_ip = node_info["key"] |> String.split "/" | List.last
+        node_ip = node_info["key"] |> String.split("/") |> List.last
         node_hostname = node_info["value"]
         # Don't try to connect to ourselves
         unless node_ip == hostname_ip[:hostaddr] 
