@@ -122,4 +122,16 @@ defmodule Eden do
     Logger.info "Termination reason: #{inspect reason}"
     Violet.delete state[:registry_dir], state[:hash]
   end
+
+  def fanout_exec(tasks_module, module, atom, args) do
+    for node <- Node.list do
+      {tasks_module, node}
+      |> Task.Supervisor.async(module, atom, args)
+      |> Task.await
+    end
+
+    apply(module, atom, args)
+
+    :ok
+  end
 end
