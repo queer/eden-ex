@@ -68,6 +68,10 @@ defmodule Eden do
     {:ok, state}
   end
 
+  def handle_call(:get_hash, _from, state) do
+    {:reply, state[:hash], state}
+  end
+
   def handle_info(:connect, state) do
     dir_name = state[:registry_dir]
 
