@@ -1,6 +1,6 @@
 # eden
 
-eden is a very-much-WIP etcd-backed distributed process registry for my Elixir projects. 
+eden is a very-much-WIP etcd-backed distributed node registry for my Elixir projects. 
 
 ## Installation
 
