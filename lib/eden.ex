@@ -97,10 +97,10 @@ defmodule Eden do
         node_ip = node_info["value"]
         node_fullname = "#{state[:shortname]}-#{node_hash}"
         node_atom = :"#{node_fullname}@#{node_ip}"
-        Logger.info "Connecting to #{inspect node_atom} identified by #{inspect node_hash}"
+        #Logger.info "Connecting to #{inspect node_atom} identified by #{inspect node_hash}"
         # Don't worry about connecting to ourselves because it's handled for us
         case Node.connect node_atom do
-          true -> Logger.info "Connected to #{inspect node_atom}"
+          true -> Logger.debug "Connected to #{inspect node_atom}"
           # TODO: Dead node tracking
           false -> Logger.warn "Couldn't connect to #{inspect node_atom}"
           :ignored -> Logger.warn "Local node is not alive for node #{inspect node_atom}!?"
