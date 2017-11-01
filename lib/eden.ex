@@ -84,7 +84,6 @@ defmodule Eden do
     if is_nil registry do
       Logger.warn "Etcd registry doesn't exist, doing initial setup..."
       Violet.make_dir dir_name
-    else
     end
 
     # Register ourselves
@@ -105,8 +104,9 @@ defmodule Eden do
         # Don't worry about connecting to ourselves because it's handled for us
         case Node.connect node_atom do
           true -> Logger.debug "Connected to #{inspect node_atom}"
-          # TODO: Dead node tracking
-          false -> Logger.warn "Couldn't connect to #{inspect node_atom}"
+          # This is fine because if the node is still alive, we can just remove it and try
+          # again next run if it's brought itself back up
+          false -> delete_node node_info["key"], node_atom
           :ignored -> Logger.warn "Local node is not alive for node #{inspect node_atom}!?"
         end
       end
@@ -118,6 +118,11 @@ defmodule Eden do
     Process.send_after self(), :connect, @connect_interval
 
     {:noreply, state}
+  end
+
+  defp delete_node(key, atom) do
+    Logger.warn "Cleaning dead node: #{inspect node_atom}"
+    Violet.delete key
   end
 
   def terminate(reason, state) do
