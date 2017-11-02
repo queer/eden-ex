@@ -24,34 +24,26 @@ defmodule Eden do
   @connect_interval 5000
 
   def start_link(opts) do
-    GenServer.start_link __MODULE__, opts, name: __MODULE__
+    GenServer.start_link __MODULE__, :ok, name: __MODULE__
   end
 
-  def init(opts) do
+  def init(:ok) do
     # Trap exits so we can respond
     Process.flag :trap_exit, true
 
     # Expect just a name as input
-    name = opts
     hash = :crypto.hash(:md5, :os.system_time(:millisecond) 
                               |> Integer.to_string) 
                               |> Base.encode16 
                               |> String.downcase
-    state = unless is_nil System.get_env("NODE_LONGNAME") do
-      %{
-        shortname: name,
-        name: System.get_env("NODE_LONGNAME") |> String.split("@") |> List.first,
-        hash: System.get_env("NODE_LONGNAME") |> String.split("@") |> List.first |> String.split("-") |> List.last,
-        registry_dir: "eden_registry_" <> to_string(name)
-      }
-    else
-      %{
-        shortname: name,
-        name: "#{name}-#{hash}",
-        hash: hash,
-        registry_dir: "eden_registry_" <> to_string(name)
-      }
-    end
+    node_fullname = System.get_env("NODE_NAME")
+
+    state = %{
+              shortname: node_fullname,
+              name: "#{node_fullname}-#{hash}",
+              hash: hash,
+              registry_dir: "eden_registry_" <> to_string(node_fullname)
+            }
 
     
     hostname_ip = Platform.hostname_with_ip()
