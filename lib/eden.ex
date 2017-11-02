@@ -95,6 +95,7 @@ defmodule Eden do
     # Start connecting
     unless is_nil registry do
       for node_info <- registry do
+        Logger.info "#{inspect node_info}"
         # Logger.info "Node: #{inspect node_info}"
         node_hash = node_info["key"] |> String.split("/") |> List.last
         node_ip = node_info["value"]
