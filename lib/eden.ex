@@ -38,6 +38,9 @@ defmodule Eden do
                               |> String.downcase
     node_fullname = System.get_env("NODE_NAME")
 
+    Logger.info "Node type: #{node_fullname}"
+    Logger.info "Node hash: #{hash}"
+
     state = %{
               shortname: node_fullname,
               name: "#{node_fullname}-#{hash}",
