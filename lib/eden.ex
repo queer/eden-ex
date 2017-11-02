@@ -89,6 +89,7 @@ defmodule Eden do
 
     # Start connecting
     unless is_nil registry do
+      Logger.info "#{inspect registry}"
       for node_info <- registry do
         Logger.info "#{inspect node_info}"
         # Logger.info "Node: #{inspect node_info}"
