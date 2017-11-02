@@ -107,7 +107,7 @@ defmodule Eden do
           true -> Logger.debug "Connected to #{inspect node_atom}"
           # This is fine because if the node is still alive, we can just remove it and try
           # again next run if it's brought itself back up
-          false -> delete_node node_info["key"], node_atom
+          false -> delete_node node_info["key"], node_hash, state[:hash]
           :ignored -> Logger.warn "Local node is not alive for node #{inspect node_atom}!?"
         end
       end
@@ -121,9 +121,9 @@ defmodule Eden do
     {:noreply, state}
   end
 
-  defp delete_node(key, atom) do
-    if atom != node() do
-      Logger.warn "Cleaning dead node: #{inspect atom}"
+  defp delete_node(key, node_hash, self_hash) do
+    if node_hash != self_hash do
+      Logger.warn "Cleaning dead node: #{inspect node_hash}"
       Violet.delete key
     end
   end
