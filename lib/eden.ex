@@ -121,7 +121,7 @@ defmodule Eden do
   end
 
   defp delete_node(key, atom) do
-    Logger.warn "Cleaning dead node: #{inspect node_atom}"
+    Logger.warn "Cleaning dead node: #{inspect atom}"
     Violet.delete key
   end
 
