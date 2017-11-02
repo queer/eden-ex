@@ -23,7 +23,7 @@ defmodule Eden do
   # TODO: Make this configurable?
   @connect_interval 5000
 
-  def start_link(opts) do
+  def start_link() do
     GenServer.start_link __MODULE__, :ok, name: __MODULE__
   end
 
@@ -89,9 +89,7 @@ defmodule Eden do
 
     # Start connecting
     unless is_nil registry do
-      Logger.info "#{inspect registry}"
       for node_info <- registry do
-        Logger.info "#{inspect node_info}"
         # Logger.info "Node: #{inspect node_info}"
         node_hash = node_info["key"] |> String.split("/") |> List.last
         node_ip = node_info["value"]
@@ -119,10 +117,6 @@ defmodule Eden do
 
   defp delete_node(key, node_hash, self_hash) do
     if node_hash != self_hash do
-      Logger.info "#{inspect key}"
-      Logger.info "#{inspect node_hash}"
-      Logger.info "#{inspect self_hash}"
-      Logger.info "#{inspect node_hash != self_hash}"
       Logger.warn "Cleaning dead node: #{inspect node_hash}"
       Violet.delete key
     end
@@ -130,8 +124,8 @@ defmodule Eden do
 
   def terminate(reason, state) do
     # Clean ourselves from the etcd registry
-    Logger.info "Eden GenServer terminating, cleaning self from registry..."
-    Logger.info "Termination reason: #{inspect reason}"
+    Logger.error "Eden GenServer terminating, cleaning self from registry..."
+    Logger.error "Termination reason: #{inspect reason}"
     Violet.delete state[:registry_dir], state[:hash]
   end
 
