@@ -121,8 +121,10 @@ defmodule Eden do
   end
 
   defp delete_node(key, atom) do
-    Logger.warn "Cleaning dead node: #{inspect atom}"
-    Violet.delete key
+    if atom != node() do
+      Logger.warn "Cleaning dead node: #{inspect atom}"
+      Violet.delete key
+    end
   end
 
   def terminate(reason, state) do
