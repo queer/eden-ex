@@ -123,6 +123,9 @@ defmodule Eden do
 
   defp delete_node(key, node_hash, self_hash) do
     if node_hash != self_hash do
+      Logger.info "#{inspect node_hash}"
+      Logger.info "#{inspect self_hash}"
+      Logger.info "#{inspect node_hash != self_hash}"
       Logger.warn "Cleaning dead node: #{inspect node_hash}"
       Violet.delete key
     end
